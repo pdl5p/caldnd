@@ -1,0 +1,53 @@
+{
+  "name": "react-dnd-sample",
+  "version": "1.0.0",
+  "description": "Study of react-dnd with redux, typescript, webpack2, react-router 4, hmr",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "webpack": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdl5p/react-dnd-sample.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pdl5p/react-dnd-sample/issues"
+  },
+  "homepage": "https://github.com/pdl5p/react-dnd-sample#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.1.3",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "css-loader": "^0.28.1",
+    "express": "^4.15.2",
+    "express-history-api-fallback": "^2.1.0",
+    "node-sass": "^4.5.2",
+    "react-hot-loader": "^3.0.0-beta",
+    "sass": "^0.5.0",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.17.0",
+    "typescript": "^2.3.2",
+    "webpack": "^2.5.0",
+    "webpack-dev-middleware": "^1.10.2",
+    "webpack-hot-middleware": "^2.18.0"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.18",
+    "@types/react": "^15.0.24",
+    "@types/react-dom": "^15.5.0",
+    "@types/webpack-env": "^1.13.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "react-router": "^4.1.1",
+    "redux": "^3.6.0"
+  }
+}
