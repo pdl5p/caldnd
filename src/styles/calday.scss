@@ -1,0 +1,31 @@
+div {
+    .day-cal {
+        border: 0px solid red;
+        min-height: 200px;
+        box-sizing: border-box;
+    }
+    .day-row {
+        height: 60px;
+        border: 0px solid green;
+        display: flex;
+        position: relative;
+        box-sizing: border-box;
+    }
+    .day-item {
+        min-width: 60px;
+        text-align: left;
+        overflow: hidden;
+        box-sizing: border-box;
+        left: 200px;
+        padding: 2px;
+        display: flex;
+        > div {
+            border: 1px solid #ccc;
+            padding: 3px;
+            box-sizing: border-box;
+            background-color: #ccc;
+            color: #333;
+            line-height: 1;
+        }
+    }
+}

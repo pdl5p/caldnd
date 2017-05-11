@@ -1,6 +1,8 @@
 import * as React from 'react';
-import C1 from './C1';
+import DayCalendar from './components/DayCalendar';
 
-const App = () => (<div>React<C1 /></div>);
+const App = () => (
+    <DayCalendar  />
+);
 
 export default App;
