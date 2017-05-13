@@ -19,7 +19,7 @@ const    generateDay = (r, d) => {
         return n.map((k, i) => generateRow(i));
     }
 
-class DayCalendar extends React.Component<any, any> {
+class Grid1 extends React.Component<any, any> {
 
     renderDay = (item, i) => {
         const s = {
@@ -51,5 +51,5 @@ class DayCalendar extends React.Component<any, any> {
     }
 }
 
-export default DayCalendar;
-export { DayCalendar }
+export default Grid1;
+export { Grid1 }

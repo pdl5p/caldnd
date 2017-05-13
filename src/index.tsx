@@ -1,13 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { createStore } from 'redux';
 
 import './styles/index.scss';
-
 import App from './App';
-import rootReducer from './reducers';
+import createStore from './reducers/store';
 
-const store = createStore(rootReducer);
+const store = createStore();
 
 const render = () => {
     ReactDOM.render(<App store={store} />, document.querySelector("#app"));
