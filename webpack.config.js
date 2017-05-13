@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
+    devtool: 'source-map',
     entry: [
         'react-hot-loader/patch',
         'webpack-hot-middleware/client',
@@ -21,9 +22,9 @@ module.exports = {
             //     exclude: path.resolve(__dirname, 'node_modules/')
             // },
             //{ test: /\.tsx?$/, include: /src/, use: 'babel-loader' },
-            { test: /\.tsx?$/, include: /src/, use: 'awesome-typescript-loader?silent=false', },
+            { test: /\.tsx?$/, include: /src/, use: 'awesome-typescript-loader?silent=true', },
             //{ test: /\.less/, include: /src/, use: ['style-loader', 'css-loader', 'less-loader'] }
-            { test: /\.scss/, include: /src/, use: ['style-loader', 'css-loader', 'sass-loader'] }
+            { test: /\.scss/, include: /src/, use: ['style-loader', 'css-loader?sourceMap=true', 'sass-loader?sourceMap=true'] }
         ],
     },
     resolve: {

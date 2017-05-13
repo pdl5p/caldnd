@@ -1,0 +1,35 @@
+
+#app {
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+}
+
+.grid2{
+    background-color: #efefef;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+
+    display: flex;
+
+    .grid2-content{
+        flex: 1;
+        padding:10px;
+        margin: 50px;
+        border: 10px solid #333;
+        background-color: #fefefe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.centered {
+    .grid2-content & {
+        height: 500px;
+        width: 1000px;
+        background-color: white;
+        border: 1px solid #333;
+    }
+}

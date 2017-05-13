@@ -5,7 +5,7 @@
     "target": "es6",
     "jsx": "react",
     "experimentalDecorators": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "skipDefaultLibCheck": true,
     "lib": [ "es6", "dom" ]
     //"types": [ "webpack-env" ],
