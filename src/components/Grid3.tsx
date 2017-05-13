@@ -1,6 +1,13 @@
 import * as React from 'react';
 import ContentDiv from './ContentDiv';
 
+const data = [
+    [[100, 0], [100, 100], [100, 200]], 
+    [[100, 100], [100, 200]], 
+    [[100, 100], [100, 200]],
+    [[100, 100], [100, 200], []]
+];
+
 function doRows() {
     return [null, null, null, null,  null].map((k, i) => ({
         width: (1000 - (100 * i + 1)),
@@ -11,11 +18,11 @@ function doRows() {
 function doState() {
     return {
         x: "yo",
-        rows: doRows()
+        rows: data
     }
 }
 
-class Grid2 extends React.Component<any, any> {
+class Grid3 extends React.Component<any, any> {
 
     constructor(props) {
         super(props);
@@ -23,16 +30,20 @@ class Grid2 extends React.Component<any, any> {
         this.state = doState();
     }
 
+    renderCells = (object, index, row) => {
+        return <div key={index} className="gri"><div>{`Item ${row}.${index}`}</div></div>
+    }
+
     renderRow = (object, index) => {
-        const s = { width: `${object.width}px`, left: `${object.left}px` }
-        return (<div key={index} className="grx"><div style={s}>
-            <div className="gri"><div>{"item"}</div></div>
+       
+        return (<div key={index} className="grx"><div >
+            {object.map((o, i) => this.renderCells(o, i, index))}
         </div></div>)
     }
 
     render() {
         return (
-            <ContentDiv name={"grid2"} >
+            <ContentDiv name={"grid3"} >
                 <div className="centered">
                     {this.state.rows.map((r, i) => this.renderRow(r, i))}
                 </div>
@@ -41,4 +52,4 @@ class Grid2 extends React.Component<any, any> {
     }
 }
 
-export default Grid2;
+export default Grid3;

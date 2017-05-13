@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Grid2 from './components/Grid2';
+import Grid3 from './components/Grid3';
 import CustomerLookup from './components/CustomerLookup';
 import SimpleDrag from './components/simpleDrag/SimpleDrag';
 
@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 
 const App = ({ store }) => (
     <Provider store={store}>
-        <Grid2 />
+        <Grid3 />
     </Provider>
 );
 

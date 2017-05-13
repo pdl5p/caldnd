@@ -4,6 +4,7 @@
 @import 'simpleDrag.scss';
 
 @import 'grid2.scss';
+@import 'grid3.scss';
 
 html {
     height: 100%;
@@ -12,5 +13,11 @@ html {
 body {
     padding: 0px;
     margin: 0px;
+    height: 100%;
+}
+
+#app {
+    margin: 0px;
+    padding: 0px;
     height: 100%;
 }
