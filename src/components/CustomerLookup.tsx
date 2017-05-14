@@ -5,7 +5,19 @@ import axios from 'axios';
 
 const getResults = (query) => {
     return new Promise((resolve, reject) => {
-        search(query).then(ok => {
+        if (!query) {
+            resolve([]);
+            return;
+        }
+        return axios({
+            url: `https://dcbpdlapi.azurewebsites.net/api/search/fast?q=${query}`,
+            headers: {
+                //'Content-type': 'application/json',
+                //'Accept': 'aaplication/json',
+                'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InowMzl6ZHNGdWl6cEJmQlZLMVRuMjVRSFlPMCIsImtpZCI6InowMzl6ZHNGdWl6cEJmQlZLMVRuMjVRSFlPMCJ9.eyJhdWQiOiIyZmMyYzk0OC0wZTQ1LTQ1Y2YtYWEzYi1iZWFlODBiNTMxYzEiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC82NzJmNzFlMy1lYTc3LTQzZDUtODdlYS0xODFkNWQ5MzI0NDIvIiwiaWF0IjoxNDk0NzIwMjQxLCJuYmYiOjE0OTQ3MjAyNDEsImV4cCI6MTQ5NDcyNDE0MSwiYWlvIjoiQVNRQTIvOERBQUFBOVprRmZ3aTBubnZBYnNjRURrUXZmZHlrQVIzSytyWm9KL1JoL05pQW1tWT0iLCJhbXIiOlsicHdkIl0sImZhbWlseV9uYW1lIjoiTHVjYXMiLCJnaXZlbl9uYW1lIjoiUGF1bCIsImlwYWRkciI6IjU4LjE2MS4xMjkuMTExIiwibmFtZSI6IlBhdWwgTHVjYXMiLCJub25jZSI6IjJlMjU3YmVlLTM1MTQtNGQ1Ny05ZGQ5LTkyYTYwZmQzNDAwMyIsIm9pZCI6IjE5MTVhNzVkLThkYTgtNDQxYS1hNjRlLTM0NTI2MzM2ODBkNCIsInBsYXRmIjoiMyIsInN1YiI6ImFNZnRHZGxtOWJ4SHo1OWs3bDd6VkY2QWxnM204MndZbk5GaE43MkVtSWciLCJ0aWQiOiI2NzJmNzFlMy1lYTc3LTQzZDUtODdlYS0xODFkNWQ5MzI0NDIiLCJ1bmlxdWVfbmFtZSI6InBhdWxAamF4bWluZS5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJwYXVsQGpheG1pbmUub25taWNyb3NvZnQuY29tIiwidXRpIjoiRHdPUGZ4SnR2MG1hQm96WEl5Z2JBQSIsInZlciI6IjEuMCJ9.MHSNWVGuBfMYYB-bzw86K2ac63NXFuQv5JwKRWnlpHK5uIx-7jXUUmLRe_QI3tEXV6wtXfJ_AU3hjhD67K4UvPvw5Vv-YveViS-dKSUMcjyE_2vdyALn048lFKDnCHHqyjL1zNTM1TvrYqTglZUzavTT3Y0fR9C165IvVzuX4ncifAMT20C_tKSiqvGy8w6K_nhNqVfqKMrKrkZ80KXd_HZD8aLUC0inuHDzoXMuXj3xQm-k3xj4gHUkDpn5XBDp7DzEYa_VmDi8qzt6Cb9Ma8Az_kSWijjW5NVU-KSUl36N0ZfaNyr-dHUQGNjMJXhPQqekUvIKyxIc3INvEN7yyQ'
+            },
+            method: "GET",
+        }).then(ok => {
             if (!ok.data.error) {
                 var r = ok.data.results.map(i => ({ id: i.customerId, name: i.displayName, contact: i.preferredContact }));
                 resolve(r);
@@ -17,20 +29,6 @@ const getResults = (query) => {
         });
     });
 }
-
-const search = (query) => {
-
-    return axios({
-        url: `https://localhost:44338/api/search/fast?q=${query}`,
-        headers: {
-            'Content-type': 'application/json',
-            'Accept': 'aaplication/json',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6InowMzl6ZHNGdWl6cEJmQlZLMVRuMjVRSFlPMCIsImtpZCI6InowMzl6ZHNGdWl6cEJmQlZLMVRuMjVRSFlPMCJ9.eyJhdWQiOiIyZmMyYzk0OC0wZTQ1LTQ1Y2YtYWEzYi1iZWFlODBiNTMxYzEiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC82NzJmNzFlMy1lYTc3LTQzZDUtODdlYS0xODFkNWQ5MzI0NDIvIiwiaWF0IjoxNDk0NTYwNTY5LCJuYmYiOjE0OTQ1NjA1NjksImV4cCI6MTQ5NDU2NDQ2OSwiYWlvIjoiWTJaZ1lHaWJuT2ozYXVHamV3VnZ2NmFLU016bU10eWljTkxnZWhTRGVDZHo1MjJQSnpzQiIsImFtciI6WyJwd2QiXSwiZmFtaWx5X25hbWUiOiJMdWNhcyIsImdpdmVuX25hbWUiOiJQYXVsIiwiaXBhZGRyIjoiNTguMTYxLjEyOS4xMTEiLCJuYW1lIjoiUGF1bCBMdWNhcyIsIm5vbmNlIjoiMWNmMWM5ZDYtOTUwOC00ZWVmLTk3Y2UtMDhjOWNkYmQ4ZjZmIiwib2lkIjoiMTkxNWE3NWQtOGRhOC00NDFhLWE2NGUtMzQ1MjYzMzY4MGQ0IiwicGxhdGYiOiIzIiwic3ViIjoiYU1mdEdkbG05YnhIejU5azdsN3pWRjZBbGczbTgyd1luTkZoTjcyRW1JZyIsInRpZCI6IjY3MmY3MWUzLWVhNzctNDNkNS04N2VhLTE4MWQ1ZDkzMjQ0MiIsInVuaXF1ZV9uYW1lIjoicGF1bEBqYXhtaW5lLm9ubWljcm9zb2Z0LmNvbSIsInVwbiI6InBhdWxAamF4bWluZS5vbm1pY3Jvc29mdC5jb20iLCJ1dGkiOiJUb0t6Z05yTWFFR3BON3BuVURFUkFBIiwidmVyIjoiMS4wIn0.gXmBxMkFjH6zeEThaa9lxXZ0OftIdGoaLUgHNWikxMQ9VcPGZUP2C1vpzUzP0UW2H4DG6LQedZfDjCdaNq5XmfuyKHzJbn-YLF_zNsJ_YbA0bVGhTlMWV1lLNMBXMfJpiwg9_C2-6RHYXbTMXWWc4mhtMPKso4vMtKu7XJJzVG2_vWd0zU3tj04nl_AE2e-_jJFMk5jAb4rgqunYshQHnueyl-Dsrezv9x_cUSQOIdbU--DII-qqgGeXL0_Tz2xPL8GwZiMIY5nkDxuV2aBIgy9ZW-3oPIDMCBDkBRVGjNEWiuaxFcu6AaO-d97989wQ7188-6h0gxnnxLYVCujwZQ'
-        },
-        method: "GET",
-    });
-}
-
 
 class CustomerLookup extends React.Component<any, any> {
 
@@ -48,14 +46,15 @@ class CustomerLookup extends React.Component<any, any> {
         }
 
         this.input = new Rx.Subject();
-        this.input.debounceTime(500).subscribe(query => {
 
-            getResults(query).then((w: any) => {
-                this.setState({
-                    result: w
-                });
-            });
+        const resultStream$ = (query) => Rx.Observable.fromPromise(getResults(query));
 
+        const queryStream$ = this.input
+            .debounceTime(650)
+            .switchMap(resultStream$);
+
+        queryStream$.subscribe(result => {
+            this.setState({ result });
         });
     }
 
@@ -63,28 +62,22 @@ class CustomerLookup extends React.Component<any, any> {
         this.setState({ searching: is });
     }
 
-    updateText = (event) => {
-        const v = event.target.value;
-        this.setState({ text: v });
-
-        this.input.next(v);
-    }
-
-    mouseMover = (event) => {
-        console.log("mover");
+    updateText = (val) => {
+        this.setState({ text: val });
+        this.input.next(val);
     }
 
     render() {
 
         const heading = this.state.searching ? <h1>Searching {this.state.text}</h1> : <h1>Not searching</h1>;
 
-        return <div className="customer-lookup" onMouseMove={this.mouseMover}>
+        return <div className="customer-lookup">
 
             {heading}
 
             <input type="text"
                 value={this.state.text}
-                onChange={(event) => this.updateText(event)}
+                onChange={(event) => this.updateText(event.target.value)}
                 onFocus={() => this.setSearching(true)}
                 onBlur={() => this.setSearching(false)} />
             <div className="result-container">
