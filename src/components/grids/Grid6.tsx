@@ -22,33 +22,15 @@ const data = [
 ];
 
 function doState() {
-    let rows = data.map(rpos);
-
-    //rows[1][1].dragging = true;
     return {
         dragging: null,
-        rows
+        rows: data.map(rpos)
     }
 }
 
-function prioritisingClone(stream$) {
-    const first = new Rx.Subject();
-    const second = stream$.do(x => first.next(x)).share();
-
-    return [
-        Rx.Observable.using(
-            () => second.subscribe(() => { }),
-            () => first
-        ),
-        second,
-    ];
-}
-
 function styleit(target, transform, transition) {
-
     target.style.webkitTransform = target.style.transform = transform;
     target.style.webkitTransition = target.style.transition = transition;
-
 }
 
 class Cell extends React.Component<any, any> {
@@ -69,31 +51,47 @@ class Cell extends React.Component<any, any> {
         this.originalLeft = this.left;
         this.originalTop = this.top;
 
-        const mousedown: any = fromEvent(target, 'mousedown');
-        const mouseup = fromEvent(window, "mouseup");
-        const mousemove = fromEvent(window, "mousemove");
+        const mouseEventToCoordinate = mouseEvent => { 
+            mouseEvent.preventDefault();
+            return {clientX: mouseEvent.clientX, clientY: mouseEvent.clientY}
+        };
 
-        const mousedrag = mousedown.switchMap((md) => {
+        const touchEventToCoordinate = touchEvent => {
+            touchEvent.preventDefault();
+            return {clientX: touchEvent.touches[0].clientX, clientY: touchEvent.touches[0].clientY};
+            };
+
+        const mousedown: any = fromEvent(target, 'mousedown').map(mouseEventToCoordinate);
+        const mouseup = fromEvent(window, "mouseup");
+        const mousemove = fromEvent(window, "mousemove").map(mouseEventToCoordinate);
+
+        const touchStarts = fromEvent(target, "touchstart").map(touchEventToCoordinate);
+        const touchMoves = fromEvent(target, "touchmove").map(touchEventToCoordinate);
+        const touchEnds = fromEvent(window, "touchend");
+
+        const dragStarts = mousedown.merge(touchStarts);
+        const dragMoves = mousemove.merge(touchMoves);
+        const dragEnds = mouseup.merge(touchEnds);
+
+        const mousedrag = dragStarts.switchMap((md: any) => {
 
             const startX = md.clientX + window.scrollX;
             const startY = md.clientY + window.scrollY;
             const startLeft = this.left;
             const startTop = this.top;
 
-            return mousemove.map((mm: any) => {
-                mm.preventDefault();
-
+            return dragMoves.map((mm: any) => {
                 return {
                     left: startLeft + mm.clientX - startX,
                     top: startTop + mm.clientY - startY
                 };
-            }).takeUntil(mouseup);
+            }).takeUntil(dragEnds);
         });
 
-        const sharedMouseDrag = mousedrag;//.share();
+        const sharedMouseDrag = mousedrag.share();
 
-        const mousedragstart = mousedown.switchMapTo(mousemove.takeUntil(mouseup).take(1));
-        const mousedragstop = mousedragstart.mergeMapTo(mouseup.take(1));
+        const mousedragstart = dragStarts.switchMapTo(dragMoves.takeUntil(dragEnds).take(1));
+        const mousedragstop = mousedragstart.mergeMapTo(dragEnds.take(1));
 
         sharedMouseDrag.subscribe((pos) => {
 
@@ -109,11 +107,11 @@ class Cell extends React.Component<any, any> {
         });
 
         sharedMouseDrag.throttleTime(200).subscribe((pos) => {
-
+            this.props.drag();
         })
 
         mousedragstart.subscribe(() => {
-
+            this.props.dragStart();
         });
 
         mousedragstop.subscribe((x) => {
@@ -122,6 +120,8 @@ class Cell extends React.Component<any, any> {
 
             this.left = this.originalLeft;
             this.top = this.originalTop;
+
+            this.props.dragEnd();
         });
 
     }
@@ -135,7 +135,7 @@ class Cell extends React.Component<any, any> {
             top: `0px`,
         }
 
-        const classy = object.dragging ? "dragging" : "abc";
+        const classy = object.dragging ? "dragging" : "";
 
         return <div ref={(d) => this.draggy = d} key={index} style={style} className={"gri"}><div className={classy}>{`Item ${row}.${index}`}</div></div>
     }
@@ -149,12 +149,27 @@ class Grid6 extends React.Component<any, any> {
         this.state = doState();
     }
 
+    itemDragStart = () => {
+        console.log("started dragging");
+    }
+
+    itemDragEnd = () => {
+        console.log("finished dragging");
+    }
+
+    itemDrag = () => {
+        console.log("dragging");
+    }
+
     renderCell = (object, index, row) => {
 
         const props = {
             object,
             index,
-            row
+            row,
+            dragStart: this.itemDragStart,
+            dragEnd: this.itemDragEnd,
+            drag: this.itemDrag
         }
 
         return <Cell key={index} {...props} />
@@ -180,7 +195,6 @@ class Grid6 extends React.Component<any, any> {
             <div className="moving" style={style}><div>MOVING</div></div>
         )
     }
-
 
     render() {
         return (

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Grid6 from './components/Grid6';
+import Grid6 from './components/grids/Grid6';
 import CustomerLookup from './components/CustomerLookup';
 import SimpleDrag from './components/simpleDrag/SimpleDrag';
 
