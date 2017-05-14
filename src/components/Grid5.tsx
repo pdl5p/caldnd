@@ -1,5 +1,8 @@
 import * as React from 'react';
 import ContentDiv from './ContentDiv';
+import * as Rx from 'rxjs';
+
+const { fromEvent } = Rx.Observable;
 
 function wipos(item) {
     return ({
@@ -14,7 +17,7 @@ function rpos(items) {
 }
 
 const data = [
-    [[100, 0]],
+    [[100, 0], [200, 100]],
 ];
 
 function doState() {
@@ -29,7 +32,48 @@ function doState() {
 
 class Cell extends React.Component<any, any> {
 
-    
+    draggy;
+
+    componentDidMount() {
+
+        const target = this.draggy;
+
+        const mousedown: any = fromEvent(target, 'mousedown');
+        const mouseup = fromEvent(window, "mouseup");
+        const mousemove = fromEvent(window, "mousemove");
+
+        const mousedrag = mousedown.switchMap((md) => {
+
+            const startX = md.clientX + window.scrollX,
+                startY = md.clientY + window.scrollY,
+                startLeft = parseInt(target.style.left, 10) || 0,
+                startTop = parseInt(target.style.top, 10) || 0;
+
+            console.log("MD");
+
+            return mousemove.map((mm: any) => {
+                //mm.preventDefault();
+
+                // let t = Math.floor(mm.clientY/150) * 150;
+                // console.log(t)
+
+                return {
+                    left: startLeft + mm.clientX - startX,
+                    top: startTop + mm.clientY - startY
+                };
+            }).takeUntil(mouseup);
+        });
+
+        const subscription = mousedrag.subscribe((pos) => {
+            target.style.top = pos.top + 'px';
+            target.style.left = pos.left + 'px';
+        }, (e) => {},
+        () => {console.log("DONE")});
+
+
+        // var mouseDrag$ = mouseDown$.switchMap((v) => mouseMove$.map((m: any) => ({x: m.clientX})).takeUntil(mouseUp$));
+        // mouseDrag$.subscribe(v => console.log(v), e => console.log(e), () => console.log("done"));
+    }
 
     render() {
         const { object, index, row } = this.props;
@@ -41,7 +85,7 @@ class Cell extends React.Component<any, any> {
 
         const classy = object.dragging ? "dragging" : "";
 
-        return <div key={index} style={style} className={"gri"}><div className={classy}>{`Item ${row}.${index}`}</div></div>
+        return <div ref={(d) => this.draggy = d} key={index} style={style} className={"gri"}><div className={classy}>{`Item ${row}.${index}`}</div></div>
     }
 }
 
@@ -61,7 +105,7 @@ class Grid5 extends React.Component<any, any> {
             row
         }
 
-        return <Cell {...props} />
+        return <Cell key={index} {...props} />
     }
 
     renderRow = (object, index) => {
