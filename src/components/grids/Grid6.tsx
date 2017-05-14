@@ -81,9 +81,12 @@ class Cell extends React.Component<any, any> {
             const startTop = this.top;
 
             return dragMoves.map((mm: any) => {
+
+                let top = Math.floor((startTop + mm.clientY - startY) / 70) * 70;
+
                 return {
                     left: startLeft + mm.clientX - startX,
-                    top: startTop + mm.clientY - startY
+                    top: top //+ top - startY
                 };
             }).takeUntil(dragEnds);
         });
@@ -95,9 +98,7 @@ class Cell extends React.Component<any, any> {
 
         sharedMouseDrag.subscribe((pos) => {
 
-            let top = Math.floor(pos.top / 70) * 70;
-
-            this.top = top;
+            this.top = pos.top;
             this.left = pos.left;
 
             target.style.zIndex = 1000;
