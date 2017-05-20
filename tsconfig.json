@@ -17,9 +17,9 @@
     //   "react": [ "./node_modules/@types/react/index" ]
     // }
   },
-  "compileOnSave": false
-//   "exclude": [
-//       "bin",
-//       "node_modules"
-//   ]
+  "compileOnSave": false,
+  "exclude": [
+      "bin",
+      "node_modules"
+  ]
 }
