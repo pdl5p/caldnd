@@ -1,25 +1,9 @@
 import * as chai from 'chai';
 const { expect } = chai;
 
-const layout = (input, mover) => {
-    let data = hotSpots(initialPositioning(objectify(input)));
-    const cii = currentItemIndex(data, mover);
-    const nii = newItemIndex(data, mover);
-    if(cii !== nii){
-        data = move(data, cii, nii);
-    }
-    return deobjectify(data);
-}
-
-const objectify = (d) => d.map((x, i) => ({ i, w: x }));
-const deobjectify = (input) => input.map(d => d.w);
-const insert = (a, i, x) => [...a.slice(0, i), x, ...a.slice(i)];
-const move = (a, o, n) => insert(a.filter((x, i) => i != o), n, a[o]);
-const newItemIndex = (h, m) => h.indexOf(h.find(h => h.hs <= m.x && h.he > m.x));
-const currentItemIndex = (d, m) => d.indexOf(d.find(x => x.i === m.i));
-const runningSum = (i) => i.reduce((a, x, i) => [...a, x + (a[i - 1] || 0)], []);
-const initialPositioning = (i) => i.reduce((a, x, i) => [...a, { ...x, x: (a.length > 0 ? a[i - 1].x + a[i - 1].w : 0) }], []);
-const hotSpots = (d) => d.reduce((a, x, i) => [...a, { ...x, hs: (a.length > 0 ? a[i - 1].he : 0), he: x.x + x.w / 2 }], []);
+import { layout, objectify, deobjectify, insert, 
+    move, newItemIndex, currentItemIndex, runningSum, 
+    initialPositioning, hotSpots } from './rectangleMover';
 
 describe('insert', () => {
     it('works inserting 25 at 2', () => {
