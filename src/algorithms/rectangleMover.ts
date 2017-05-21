@@ -1,12 +1,13 @@
 
 export const layout = (i, m) => {
-    let d = hotSpots(initialPositioning(objectify(i)));
+    let d = hotSpots(initialPositioning((i)));
+    //console.log("d", d);
     const c = currentItemIndex(d, m);
     const n = newItemIndex(d, m);
     if(c !== n){
         d = move(d, c, n);
     }
-    return deobjectify(d);
+    return d.map(x => ({ i: x.i, w: x.w}));
 }
 
 export const objectify = (d) => d.map((x, i) => ({ i, w: x }));

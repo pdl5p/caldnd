@@ -8,18 +8,28 @@ const { fromEvent } = Rx.Observable;
 
 function wipos(item, index) {
     return ({
-        i: index,
+        id: item.i,
+        index: index,
         width: item.w,
         left: item.x
     });
 }
 
-const data = [100, 75, 100, 50];
+const data = [
+    { i: 'A', w: 100},
+    { i: 'B', w: 30},
+    { i: 'C', w: 50},
+    { i: 'D', w: 200},
+    { i: 'E', w: 120},
+    { i: 'F', w: 100}
+    ];
 
 function doState() {
 
     return {
-        rows: data
+        dragging: false,
+        rows: data,
+        guide: data
     }
 }
 
@@ -104,12 +114,14 @@ class Cell extends React.Component<any, any> {
 
         sharedMouseDrag.debounceTime(300).subscribe((x) => {
 
-            this.props.dragPause(
-                {
-                    i: this.props.index,
-                    x: x.left,
-                    w: this.props.object.width
-                });
+           const dragData = {
+                i: this.props.object.id,
+                //index: this.props.index,
+                x: x.left,
+                //w: this.props.object.width
+            };
+            this.props.dragPause(dragData);
+
         });
 
         sharedMouseDrag.throttleTime(200).subscribe((pos) => {
@@ -143,7 +155,7 @@ class Cell extends React.Component<any, any> {
 
         const classy = object.dragging ? "dragging" : "";
 
-        return <div ref={(d) => this.draggy = d} key={index} style={style} className={"gri"}><div className={classy}>{`Item ${row}.${index}`}</div></div>
+        return <div ref={(d) => this.draggy = d} key={index} style={style} className={"gri"}><div className={classy}>{`${object.id} Item ${row}.${index}`}</div></div>
     }
 }
 
@@ -156,19 +168,30 @@ class Grid7 extends React.Component<any, any> {
 
     itemDragStart = () => {
         console.log("started dragging");
+        this.setState({dragging: true});
     }
 
     itemDragEnd = () => {
         console.log("finished dragging");
+        this.setState({rows: this.state.guide, dragging: false});
     }
 
     itemDrag = () => {
-        console.log("dragging");
+        //console.log("dragging");
     }
 
     itemDragPause = (data) => {
-        console.log("dragging paused", this.state.rows, data);
-        console.log("new layout", layout(this.state.rows, data));
+        if(!this.state.dragging){
+            return;
+        }
+        //console.log("dragging paused", this.state.rows, data);
+
+        const newLayout = layout(this.state.rows, data);
+
+        console.log("guides", this.state.guide.map(x => x.i));
+        console.log("new layout", newLayout.map(x => x.i));
+
+        this.setState({guide: newLayout, rows: newLayout});
     }
 
 
@@ -193,14 +216,37 @@ class Grid7 extends React.Component<any, any> {
         </div></div>)
     }
 
+    renderGuideCell = (object, index) => {
+
+        //console.log(object);
+
+        const style = {
+            border: "1px solid blue",
+            width: object.width,
+            left: object.left,
+            height: "60px",
+            color: "black"
+        }
+
+        return <div style={style} className="gri" key={index}>{object.id} {index}</div> 
+    }
+
+    renderGuideRow = (object, index) => {
+        return (<div key={index} className="grx"><div>
+            {object.map((o, i) => this.renderGuideCell(o, i))}
+        </div></div>)
+    }
+
     render() {
 
-        const rows = [initialPositioning(objectify(this.state.rows)).map(wipos)];
-
+        const rows = [initialPositioning((this.state.rows)).map(wipos)];
+        const guides = [initialPositioning((this.state.guide)).map(wipos)];
         return (
             <ContentDiv name={"grid7"} >
                 <div className="centered">
                     {rows.map((r, i) => this.renderRow(r, i))}
+                    {guides.map((r, i) => this.renderGuideRow(r, i))}
+                    
                 </div>
             </ContentDiv>
         )

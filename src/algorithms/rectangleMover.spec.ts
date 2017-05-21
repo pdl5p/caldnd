@@ -1,9 +1,11 @@
 import * as chai from 'chai';
 const { expect } = chai;
 
-import { layout, objectify, deobjectify, insert, 
-    move, newItemIndex, currentItemIndex, runningSum, 
-    initialPositioning, hotSpots } from './rectangleMover';
+import {
+    layout, objectify, deobjectify, insert,
+    move, newItemIndex, currentItemIndex, runningSum,
+    initialPositioning, hotSpots
+} from './rectangleMover';
 
 describe('insert', () => {
     it('works inserting 25 at 2', () => {
@@ -128,18 +130,18 @@ describe('layout', () => {
 
     it('returns if no movement', () => {
 
-        const data = [50, 150, 100];
-        const mover = { i: 0, x: 5 }
-        const expected = [50, 150, 100];
-       
+        const data = [{ i: 'A', w: 50 }, { i: 'B', w: 150 }, { i: 'C', w: 100 }];
+        const mover = { i: 'A', x: 5 }
+        const expected = [{ i: 'A', w: 50 }, { i: 'B', w: 150 }, { i: 'C', w: 100 }];
+
         expect(layout(data, mover)).to.deep.eq(expected);
     });
 
     it('calculates layout correctly', () => {
 
-        const data = [50, 150, 100];
-        const mover = { i: 0, x: 100 }
-        const expected = [150, 50, 100]
+        const data = [{ i: 'A', w: 50 }, { i: 'B', w: 150 }, { i: 'C', w: 100 }];
+        const mover = { i: 'A', x: 100 }
+        const expected = [{ i: 'B', w: 150 }, { i: 'A', w: 50 }, { i: 'C', w: 100 }];
         expect(layout(data, mover)).to.deep.eq(expected);
     });
 });
